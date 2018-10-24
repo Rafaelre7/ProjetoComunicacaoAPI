@@ -32,8 +32,8 @@ public class LocalizaDispositivo {
          while(network.isDiscoveryRunning()){
            
              try {
-                 System.err.println("Buscando dispositivos");
-                
+                 System.out.println("Buscando dispositivos");
+                 
                  Thread.currentThread().sleep(100);
                  
              } catch (InterruptedException ex) {

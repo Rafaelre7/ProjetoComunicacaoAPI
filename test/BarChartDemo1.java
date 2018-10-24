@@ -40,7 +40,6 @@
  * 
  */
 
-package org.jfree.chart.demo;
 
 import java.awt.Color;
 import java.awt.Dimension;
