@@ -7,22 +7,15 @@ package Principal;
 
 import com.digi.xbee.api.RemoteXBeeDevice;
 import com.digi.xbee.api.XBeeDevice;
-import com.digi.xbee.api.ZigBeeDevice;
 import com.digi.xbee.api.exceptions.XBeeException;
 import com.digi.xbee.api.listeners.IDataReceiveListener;
-import com.digi.xbee.api.models.XBee16BitAddress;
 import com.digi.xbee.api.models.XBee64BitAddress;
 import com.digi.xbee.api.models.XBeeMessage;
-import com.sun.xml.internal.ws.util.StringUtils;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
@@ -48,10 +41,13 @@ public class ConexaoFrame extends javax.swing.JFrame {
     private static final int BAUD_RATE = 9600;
     XBeeDevice zigBeeDevice = new XBeeDevice(PORT, BAUD_RATE);
     private IDataReceiveListener listenner;
+    private Calendar c = Calendar.getInstance();
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    private String dataHora;
 
     public ConexaoFrame() {
         initComponents();
-        ImageIcon icone = new ImageIcon("resources/icone.png");
+        ImageIcon icone = new ImageIcon(getClass().getResource("/Img/icone.png"));
         setIconImage(icone.getImage());
         setLocationRelativeTo(null);
         init();
@@ -64,7 +60,6 @@ public class ConexaoFrame extends javax.swing.JFrame {
 
         DefaultCaret caret = (DefaultCaret) taDados.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-
     }
 
     /**
@@ -101,6 +96,7 @@ public class ConexaoFrame extends javax.swing.JFrame {
 //        return StringUtils.leftPad(Long.toHexString(l), quantideMinimaDigitos, '0').toUpperCase();
 //    }
     //Remover itens da tabela 
+
     private void clearTable() {
 
         DefaultTableModel model = (DefaultTableModel) this.tableProdutos.getModel();
@@ -209,7 +205,6 @@ public class ConexaoFrame extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem6 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
 
@@ -315,7 +310,7 @@ public class ConexaoFrame extends javax.swing.JFrame {
         });
 
         HIgh.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
-        HIgh.setText("HIgh :");
+        HIgh.setText("High :");
 
         tfAlto.setEditable(false);
         tfAlto.addActionListener(new java.awt.event.ActionListener() {
@@ -654,11 +649,6 @@ public class ConexaoFrame extends javax.swing.JFrame {
         });
         jMenu2.add(jMenuItem2);
 
-        jMenuItem6.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem6.setText("Configurar Xbee (ETHERNET)");
-        jMenuItem6.setToolTipText("");
-        jMenu2.add(jMenuItem6);
-
         jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem3.setText("Calculadora de Checksum");
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
@@ -730,13 +720,13 @@ public class ConexaoFrame extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel3)
-                                .addGap(24, 24, 24)
+                                .addGap(31, 31, 31)
                                 .addComponent(checkSum)
-                                .addGap(19, 19, 19)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(CkLimpar, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(10, 10, 10)
+                                .addGap(7, 7, 7)
                                 .addComponent(jLabel6)
-                                .addGap(9, 9, 9)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(textoDelay, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(6, 6, 6)
@@ -788,27 +778,23 @@ public class ConexaoFrame extends javax.swing.JFrame {
                                         .addGap(11, 11, 11)
                                         .addComponent(btClearTable, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(6, 6, 6)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(20, 20, 20)
+                                .addGap(26, 26, 26)
                                 .addComponent(jLabel3))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(10, 10, 10)
-                                .addComponent(checkSum))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(10, 10, 10)
-                                .addComponent(CkLimpar))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(10, 10, 10)
-                                .addComponent(jLabel6))
-                            .addComponent(textoDelay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(16, 16, 16)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(CkLimpar)
+                                    .addComponent(jLabel6)
+                                    .addComponent(textoDelay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(checkSum))))
                         .addGap(1, 1, 1)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(28, 28, 28)
+                        .addGap(34, 34, 34)
                         .addComponent(JAbas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(12, Short.MAX_VALUE))
         );
@@ -818,7 +804,12 @@ public class ConexaoFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        System.exit(0);
+        Object[] options = {"Sim", "Não"};
+        int i = JOptionPane.showOptionDialog(null, "Deseja realmente sair?", "Solinftec",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        if (i == JOptionPane.YES_OPTION) {
+            System.exit(0);
+        }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 //
     private void tableProdutosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableProdutosMouseClicked
@@ -831,7 +822,10 @@ public class ConexaoFrame extends javax.swing.JFrame {
             tfBaixo.setText(model.getValueAt(selectedRow, 2).toString());
         }
     }//GEN-LAST:event_tableProdutosMouseClicked
-
+    public void inicia(String texto) {
+//        taDados.append(texto);
+        taDados.setText(texto);
+    }
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
 
         try {
@@ -842,6 +836,7 @@ public class ConexaoFrame extends javax.swing.JFrame {
             if (!mainApp.getxBee().isOpen()) {
                 throw new Exception("Conexão com ZigBee não foi inicializada!");
             }
+
             //conexao esta aberta
             List<RemoteXBeeDevice> listaZigBees = new LocalizaDispositivo(mainApp.getxBee()).getAllRemoteDev();
 
@@ -852,6 +847,7 @@ public class ConexaoFrame extends javax.swing.JFrame {
 
             JOptionPane.showMessageDialog(null, e);
         }
+        taDados.append("Busca finalizada !\n");
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
@@ -887,7 +883,13 @@ public class ConexaoFrame extends javax.swing.JFrame {
             public void run() {
 
                 int delay = Integer.parseInt(textoDelay.getText());
-                String textoAll = taDados1.getText();
+                String textoAll;
+                if (taDados1.getSelectedText() == null) {
+                    textoAll = taDados1.getText();
+                } else {
+                    textoAll = taDados1.getSelectedText();
+                }
+
                 StringTokenizer st = new StringTokenizer(textoAll, "\n");
 
                 if (CkLimpar.isSelected()) {
@@ -905,6 +907,7 @@ public class ConexaoFrame extends javax.swing.JFrame {
                     } else {
                         texto = texto + '\n';
                     }
+                    dataHora = ("[" + sdf.format(c.getTime()) + "] - ");
 
                     System.out.println("Send: " + texto);
                     byte[] dataToSend = texto.getBytes();
@@ -912,6 +915,7 @@ public class ConexaoFrame extends javax.swing.JFrame {
                     try {
 
                         mainApp.getxBee().sendBroadcastData(dataToSend);
+                        texto = dataHora + texto;
                         taDados.append("Enviado broadcast: " + texto + "\n");
 
                     } catch (XBeeException ex) {
@@ -933,8 +937,12 @@ public class ConexaoFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEnviaBrodActionPerformed
 
     private void btnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairActionPerformed
-
-        System.exit(0);
+        Object[] options = {"Sim", "Não"};
+        int i = JOptionPane.showOptionDialog(null, "Deseja realmente sair?", "Solinftec",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        if (i == JOptionPane.YES_OPTION) {
+            System.exit(0);
+        }
     }//GEN-LAST:event_btnSairActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
@@ -960,7 +968,12 @@ public class ConexaoFrame extends javax.swing.JFrame {
             public void run() {
 
                 int delay = Integer.parseInt(textoDelay.getText());
-                String textoAll = taDados1.getText();
+                String textoAll;
+                if (taDados1.getSelectedText() == null) {
+                    textoAll = taDados1.getText();
+                } else {
+                    textoAll = taDados1.getSelectedText();
+                }
                 StringTokenizer st = new StringTokenizer(textoAll, "\n");
 
                 if (CkLimpar.isSelected()) {
@@ -978,6 +991,7 @@ public class ConexaoFrame extends javax.swing.JFrame {
                     } else {
                         texto = texto + '\n';
                     }
+                    dataHora = ("[" + sdf.format(c.getTime()) + "] - ");
 
                     System.out.println("Send: " + texto);
                     byte[] dataToSend = texto.getBytes();
@@ -989,6 +1003,7 @@ public class ConexaoFrame extends javax.swing.JFrame {
                         if (remoteDevice != null) {
 
                             mainApp.getxBee().sendData(remoteDevice, dataToSend);
+                            texto = dataHora + texto;
                             taDados.append("Enviado unicast: " + texto + "\n");
                         }
 
@@ -1160,39 +1175,39 @@ public class ConexaoFrame extends javax.swing.JFrame {
 
     private void btnZig3P2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZig3P2ActionPerformed
         // TODO add your handling code here:
-         taDados1.setText("ZIG3P,2,5523,13A200,40475D5A,2112.28947,05026.17715,0000011111,0000002222");
+        taDados1.setText("ZIG3P,2,5523,13A200,40475D5A,2112.28947,05026.17715,0000011111,0000002222");
     }//GEN-LAST:event_btnZig3P2ActionPerformed
 
     private void btnZIG4P2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZIG4P2ActionPerformed
         // TODO add your handling code here:
-         taDados1.setText("ZIG4P,2,0,13A200,40473275,,,,,,,");
+        taDados1.setText("ZIG4P,2,0,13A200,40473275,,,,,,,");
     }//GEN-LAST:event_btnZIG4P2ActionPerformed
 
     private void btnZIG4P1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZIG4P1ActionPerformed
         // TODO add your handling code here:
-         taDados1.setText("ZIG4P,1,13A200,41675D5F,700916500360,100753100752");
+        taDados1.setText("ZIG4P,1,13A200,41675D5F,700916500360,100753100752");
     }//GEN-LAST:event_btnZIG4P1ActionPerformed
 
     private void btnZIG6P0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZIG6P0ActionPerformed
         // TODO add your handling code here:
-         taDados1.setText("ZIG6P,0,5523,13A200,40475D5A,2112.28953,05026.17688,0000011111,0000002222");
+        taDados1.setText("ZIG6P,0,5523,13A200,40475D5A,2112.28953,05026.17688,0000011111,0000002222");
     }//GEN-LAST:event_btnZIG6P0ActionPerformed
 
     private void btnZIG6P1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZIG6P1ActionPerformed
         // TODO add your handling code here:
-         taDados1.setText("ZIG6P,1,5523,13A200,40475D5A,2112.28953,05026.17688,0000011111,0000002222");
+        taDados1.setText("ZIG6P,1,5523,13A200,40475D5A,2112.28953,05026.17688,0000011111,0000002222");
     }//GEN-LAST:event_btnZIG6P1ActionPerformed
 
     private void btnZIG6P2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZIG6P2ActionPerformed
         // TODO add your handling code here:
-         taDados1.setText("ZIG6P,2,5523,13A200,40475D5A,2112.28953,05026.17688,0000011111,0000002222");
+        taDados1.setText("ZIG6P,2,5523,13A200,40475D5A,2112.28953,05026.17688,0000011111,0000002222");
     }//GEN-LAST:event_btnZIG6P2ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
         // TODO add your handling code here:
         Zig c = new Zig();
         c.setVisible(true);
-        
+
     }//GEN-LAST:event_jMenuItem5ActionPerformed
     /**
      * @param args the command line arguments
@@ -1293,11 +1308,10 @@ public class ConexaoFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextArea taDados;
+    public javax.swing.JTextArea taDados;
     private javax.swing.JTextArea taDados1;
     private javax.swing.JTable tableProdutos;
     private javax.swing.JTextField textoDelay;
@@ -1342,7 +1356,9 @@ public class ConexaoFrame extends javax.swing.JFrame {
 
                 boolean status = xbm.isBroadcast();
                 String me = status ? "Recebido broadcast: " : "Recebido unicast: ";
-                taDados.append(me + xbm.getDataString() + "\n");
+                dataHora = ("[" + sdf.format(c.getTime()) + "] - ");
+                dataHora = me + dataHora;
+                taDados.append(dataHora + xbm.getDataString() + "\n");
 
             }
         };
