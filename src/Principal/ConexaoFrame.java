@@ -18,6 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -205,6 +207,7 @@ public class ConexaoFrame extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem6 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
 
@@ -214,6 +217,11 @@ public class ConexaoFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SIMULADOR MODO API - SOLINFTEC");
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         tableProdutos.setModel(new javax.swing.table.DefaultTableModel(
@@ -678,6 +686,15 @@ public class ConexaoFrame extends javax.swing.JFrame {
         });
         jMenu2.add(jMenuItem2);
 
+        jMenuItem6.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem6.setText("Configurar Preambulo");
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem6);
+
         jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem3.setText("Calculadora de Checksum");
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
@@ -910,6 +927,7 @@ public class ConexaoFrame extends javax.swing.JFrame {
 
                     } catch (XBeeException ex) {
                         Logger.getLogger(ConexaoFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        System.out.println("Erro");
                     }
 
                     try {
@@ -1110,6 +1128,15 @@ public class ConexaoFrame extends javax.swing.JFrame {
         c.setVisible(true);
 
     }//GEN-LAST:event_jMenuItem5ActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+//        Atualizar();
+    }//GEN-LAST:event_formWindowOpened
+
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+        // TODO add your handling code here:
+        new ConfgPreambulo(this).setVisible(true);
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
     /**
      * @param args the command line arguments
      */
@@ -1209,6 +1236,7 @@ public class ConexaoFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -1271,4 +1299,38 @@ public class ConexaoFrame extends javax.swing.JFrame {
 
         mainApp.getxBee().removeDataListener(listenner);
     }
+
+//    public void Atualizar() {
+//        final long SEGUNDOS = (1000 * 20);// 20 MINUTOS = 1200
+//        final long DELAY = (1000 * 10);// 1 MINUTOS = 60
+//
+//        Timer timer = null;
+//        if (timer == null) {
+//            timer = new Timer();
+//            TimerTask tarefa = new TimerTask() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        
+//                        XBeeDevice xBee = getMainApp().getxBee();
+//                        if (xBee.isOpen()) {
+//                            System.out.println("Está conectado xbee");
+//                        } else {
+//                            xBee = new XBeeDevice("COM12", 115200);
+//                            startListenner();
+//                            
+//                            System.out.println("Não está conectado");
+//                        }
+//
+//                        // Forçar coleta de lixo
+//                        Runtime.getRuntime().gc();
+//                    } catch (Exception e) {
+//                        System.out.println("Não conseguiu conectar");
+////                        e.printStackTrace();
+//                    }
+//                }
+//            };
+//            timer.scheduleAtFixedRate(tarefa, DELAY, SEGUNDOS);
+//        }
+//    }
 }
