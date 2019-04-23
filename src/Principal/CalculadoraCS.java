@@ -48,9 +48,15 @@ public class CalculadoraCS extends javax.swing.JFrame {
         tfTrama = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         tfTramaFinal = new javax.swing.JTextField();
+        btnCopiar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Calcladora Checksum");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
         jLabel1.setText("Calcular CheckSum");
@@ -68,6 +74,14 @@ public class CalculadoraCS extends javax.swing.JFrame {
 
         jLabel4.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
         jLabel4.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Trama Final", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.TOP));
+
+        btnCopiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/Copy_24x24.png"))); // NOI18N
+        btnCopiar.setText("Copiar trama");
+        btnCopiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCopiarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -96,7 +110,10 @@ public class CalculadoraCS extends javax.swing.JFrame {
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 750, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(10, 10, 10)
-                                .addComponent(tfTramaFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 730, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(tfTramaFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 730, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btnCopiar)))
                 .addContainerGap(13, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -122,18 +139,16 @@ public class CalculadoraCS extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(50, 50, 50)
                         .addComponent(tfTramaFinal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(btnCopiar)
+                .addContainerGap(8, Short.MAX_VALUE))
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void formWindowOpened(java.awt.event.WindowEvent evt) {                                  
-       // this.getRootPane().setDefaultButton(this.btnCopiar);
-        toolkit = Toolkit.getDefaultToolkit();
-        clipboard = toolkit.getSystemClipboard();
-    }      
+
     private void tfTramaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfTramaKeyReleased
         // TODO add your handling code here:
         if(!tfTrama.getText().isEmpty()){
@@ -152,6 +167,18 @@ public class CalculadoraCS extends javax.swing.JFrame {
             tfValor.setText("00");
         }
     }//GEN-LAST:event_tfTramaKeyReleased
+
+    private void btnCopiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCopiarActionPerformed
+        // TODO add your handling code here:
+        clipboard.setContents(stringSelection, null);
+    }//GEN-LAST:event_btnCopiarActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        // TODO add your handling code here:
+        this.getRootPane().setDefaultButton(this.btnCopiar);
+        toolkit = Toolkit.getDefaultToolkit();
+        clipboard = toolkit.getSystemClipboard();
+    }//GEN-LAST:event_formWindowOpened
 
     /**
      * @param args the command line arguments
@@ -189,6 +216,7 @@ public class CalculadoraCS extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCopiar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
