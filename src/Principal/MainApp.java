@@ -1,14 +1,6 @@
 package Principal;
 
-import com.digi.xbee.api.RemoteXBeeDevice;
-import com.digi.xbee.api.WiFiDevice;
 import com.digi.xbee.api.XBeeDevice;
-import com.digi.xbee.api.exceptions.XBeeException;
-import com.digi.xbee.api.listeners.IDataReceiveListener;
-import com.digi.xbee.api.models.XBeeMessage;
-import com.digi.xbee.api.models.XBeeProtocol;
-import java.util.List;
-import java.util.Scanner;
 
 public class MainApp {
 
@@ -16,12 +8,22 @@ public class MainApp {
     /**
      * @return the nome
      */
-    private static String PORT = "COM3";
+    private static String PORT = "COM8";
     // TODO Replace with the baud rate of your sender module.  
-    private static int BAUD_RATE = 9600;
-    private static String nome;
-    private XBeeDevice xBee;
+    private static int BAUD_RATE = 115200;
+    private static String nome = "Verifica Xbee"; 
+    private static XBeeDevice xBee;
     private static String DATA_TO_SEND = "KIJO50,20,01,2345,01,16014,190810,181153,01,3,4,4,4,N,01,5,01,4,01,7,01,5,01,5,01,7,01,08,01,01,1,4B";
+    private static String NOMETHREAD = "Verifica Xbee";
+    
+
+    public static String getNOMETHREAD() {
+        return NOMETHREAD;
+    }
+
+    public static void setNOMETHREAD(String NOMETHREAD) {
+        MainApp.NOMETHREAD = NOMETHREAD;
+    }
 
          XBeeDevice myDevice = new XBeeDevice(PORT, BAUD_RATE);
        public void enviar(String DATA_TO_SEND){
@@ -85,19 +87,14 @@ public class MainApp {
         DATA_TO_SEND = aDATA_TO_SEND;
     }
 
-    
-    /**
-     * @return the xBee
-     */
-    public XBeeDevice getxBee() {
+    public static XBeeDevice getxBee() {
         return xBee;
     }
 
-    /**
-     * @param xBee the xBee to set
-     */
-    public void setxBee(XBeeDevice xBee) {
-        this.xBee = xBee;
+    public static void setxBee(XBeeDevice xBee) {
+        MainApp.xBee = xBee;
     }
+
+    
  
 }

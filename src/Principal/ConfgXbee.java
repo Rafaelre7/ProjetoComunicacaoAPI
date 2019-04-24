@@ -15,12 +15,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import static Principal.ConexaoFrame.monitorZig;
 
 /**
  *
  * @author Rafael
  */
 public class ConfgXbee extends javax.swing.JFrame {
+
+    public ConfgXbee() {
+    }
 
     private static String PORT;
     private static int BAUD_RATE;
@@ -38,7 +42,7 @@ public class ConfgXbee extends javax.swing.JFrame {
         setIconImage(icone.getImage());
         setModalExclusionType(Dialog.ModalExclusionType.NO_EXCLUDE);
         setLocationRelativeTo(null);
-        
+
         listPorts();
 
         this.conexaoFrame = conexFrame;
@@ -53,7 +57,7 @@ public class ConfgXbee extends javax.swing.JFrame {
         cbPort.setSelectedItem(auxMainApp.getPORT().toUpperCase());
         cbVelocidade.setSelectedItem(new Integer(auxMainApp.getBAUD_RATE()));
 
-        //condição para abilitar os botoes se a conexão ja estiver aberta
+        //condição para habilitar os botoes se a conexão ja estiver aberta
         if (xBee.isOpen()) {
             this.btnSalvar.setEnabled(false);
         } else {
@@ -62,18 +66,16 @@ public class ConfgXbee extends javax.swing.JFrame {
 
     }
 
-    private void listPorts()
-    {
-                
+    private void listPorts() {
+
         Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
-        while ( portEnum.hasMoreElements() ) 
-        {
+        while (portEnum.hasMoreElements()) {
             CommPortIdentifier portIdentifier = portEnum.nextElement();
-            
+
             cbPort.addItem(portIdentifier.getName().toUpperCase());
-        }        
+        }
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -201,12 +203,17 @@ public class ConfgXbee extends javax.swing.JFrame {
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
 
         //obtem a porta selecionada
-        String porta = ((String)cbPort.getSelectedItem()).toUpperCase();
+        String porta = ((String) cbPort.getSelectedItem()).toUpperCase();
         //obtem a velocidade da conexão BAUDRATE
         int baudrate = Integer.parseInt(cbVelocidade.getSelectedItem().toString());
+        //atribui nome a thread
+        String nomeThread = "Verifica Xbee";
 
         XBeeDevice xBee = this.conexaoFrame.getMainApp().getxBee();
-
+        System.out.println(xBee);
+        this.conexaoFrame.getMainApp().setxBee(xBee);
+        
+        
         xBee = new XBeeDevice(porta, baudrate);
 
         try {
@@ -219,8 +226,14 @@ public class ConfgXbee extends javax.swing.JFrame {
 
             this.conexaoFrame.getMainApp().setPORT(porta);
             this.conexaoFrame.getMainApp().setBAUD_RATE(baudrate);
+            this.conexaoFrame.getMainApp().setNome(nomeThread);
 
             conexaoFrame.startListenner();
+
+            //Inicializa thread para verificar xbee 
+//            monitorZig.addZig(xBee, nomeThread, porta, baudrate);
+            
+            conexaoFrame.Atualizar();
             
             JOptionPane.showMessageDialog(null, "Conectado com sucesso DataCall");
 
@@ -242,7 +255,7 @@ public class ConfgXbee extends javax.swing.JFrame {
         xBee.close();
         this.btnSalvar.setEnabled(true);
         this.btnCancelar.setEnabled(false);
-              
+
         conexaoFrame.endListenner();
         try {
             Thread.sleep(200);
@@ -257,6 +270,7 @@ public class ConfgXbee extends javax.swing.JFrame {
             btnSalvar.doClick();
         }
     }//GEN-LAST:event_cbPortKeyPressed
+
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

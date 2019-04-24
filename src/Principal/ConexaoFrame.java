@@ -11,11 +11,14 @@ import com.digi.xbee.api.exceptions.XBeeException;
 import com.digi.xbee.api.listeners.IDataReceiveListener;
 import com.digi.xbee.api.models.XBee64BitAddress;
 import com.digi.xbee.api.models.XBeeMessage;
+import gnu.io.CommPortIdentifier;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Timer;
@@ -35,7 +38,6 @@ import javax.swing.text.DefaultCaret;
 public class ConexaoFrame extends javax.swing.JFrame {
 
     private MainApp mainApp;
-    //  private XBeeDevice zigBeeDevice;
     private DefaultTableModel modelProdutos;
     public String envia;
     private static final String PORT = "COM5";
@@ -46,6 +48,8 @@ public class ConexaoFrame extends javax.swing.JFrame {
     private Calendar c = Calendar.getInstance();
     private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     private String dataHora;
+    public static MonitorZig monitorZig;
+    private static final String NOMETHREAD = "Verifica Xbee";
 
     public ConexaoFrame() {
         initComponents();
@@ -53,6 +57,7 @@ public class ConexaoFrame extends javax.swing.JFrame {
         setIconImage(icone.getImage());
         setLocationRelativeTo(null);
         init();
+//        this.monitorZig = new MonitorZig("Monitoramento de Xbee",this);
     }
 
     // inicializa com construtor, esse metedo inicialza todos as instancia de objs
@@ -121,10 +126,6 @@ public class ConexaoFrame extends javax.swing.JFrame {
                 new String(remote.get64BitAddress().toString()),
                 new String(remote.get16BitAddress().toString()),});
         });
-
-    }
-
-    private void configuraConexaoComZigBee() {
 
     }
 
@@ -793,17 +794,6 @@ public class ConexaoFrame extends javax.swing.JFrame {
         tfBaixo.setText("");
     }//GEN-LAST:event_btnLimparActionPerformed
 
-//    public void calcula() {
-//        String kijoE = taDados1.getText();
-//
-//        String kijoN[] = kijoE.split(",");
-//        //  System.out.println(Integer.parseInt(kijoN[0])); 
-//        System.out.println(Integer.parseInt(kijoN[1]) + 1);
-//
-//        String stringUnica = Arrays.toString(kijoN);
-//        System.out.println(stringUnica);
-//
-//    }
     private void btnEnviaBrodActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviaBrodActionPerformed
 
         new Thread(new Runnable() {
@@ -888,7 +878,44 @@ public class ConexaoFrame extends javax.swing.JFrame {
             System.out.println("File access cancelled by user.");
         }
     }//GEN-LAST:event_jMenuItem4ActionPerformed
+    private void envia() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
 
+                String textoAll = "ZIG35,11976,13A200,415718C2,0,1,0000000400,0000000405,0000000000,2";
+                StringTokenizer st = new StringTokenizer(textoAll, "\n");
+
+                while (st.hasMoreTokens()) {
+
+                    String texto = st.nextToken();
+
+                    dataHora = ("[" + sdf.format(c.getTime()) + "] - ");
+
+                    System.out.println("Send: " + texto);
+                    byte[] dataToSend = texto.getBytes();
+
+                    try {
+
+                        RemoteXBeeDevice remoteDevice = new RemoteXBeeDevice(mainApp.getxBee(), new XBee64BitAddress(tfAlto.getText().toUpperCase()));
+
+                        if (remoteDevice != null) {
+
+                            mainApp.getxBee().sendData(remoteDevice, dataToSend);
+                            texto = dataHora + texto;
+                            taDados.append("Enviado unicast: " + texto + "\n");
+                        }
+
+                    } catch (XBeeException ex) {
+                        Logger.getLogger(ConexaoFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        System.out.println("Erro");
+                    }
+
+                }
+
+            }
+        }).start();
+    }
     private void btnEnviaUniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviaUniActionPerformed
 
         new Thread(new Runnable() {
@@ -1141,6 +1168,7 @@ public class ConexaoFrame extends javax.swing.JFrame {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
 //        Atualizar();
+//        listPorts();
     }//GEN-LAST:event_formWindowOpened
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
@@ -1316,37 +1344,109 @@ public class ConexaoFrame extends javax.swing.JFrame {
         mainApp.getxBee().removeDataListener(listenner);
     }
 
-//    public void Atualizar() {
-//        final long SEGUNDOS = (1000 * 20);// 20 MINUTOS = 1200
-//        final long DELAY = (1000 * 10);// 1 MINUTOS = 60
-//
-//        Timer timer = null;
-//        if (timer == null) {
-//            timer = new Timer();
-//            TimerTask tarefa = new TimerTask() {
-//                @Override
-//                public void run() {
-//                    try {
-//                        
-//                        XBeeDevice xBee = getMainApp().getxBee();
-//                        if (xBee.isOpen()) {
-//                            System.out.println("Está conectado xbee");
-//                        } else {
-//                            xBee = new XBeeDevice("COM12", 115200);
-//                            startListenner();
-//                            
-//                            System.out.println("Não está conectado");
-//                        }
-//
-//                        // Forçar coleta de lixo
-//                        Runtime.getRuntime().gc();
-//                    } catch (Exception e) {
-//                        System.out.println("Não conseguiu conectar");
-////                        e.printStackTrace();
-//                    }
-//                }
-//            };
-//            timer.scheduleAtFixedRate(tarefa, DELAY, SEGUNDOS);
-//        }
-//    }
+    public void Atualizar() {
+        final long SEGUNDOS = (1000 * 10);// 20 MINUTOS = 1200
+        final long DELAY = (1000 * 10);// 1 MINUTOS = 60
+
+        Timer timer = null;
+        if (timer == null) {
+            timer = new Timer();
+            TimerTask tarefa = new TimerTask() {
+                @Override
+                public void run() {
+
+                    try {
+
+                        XBeeDevice xBee = getMainApp().getxBee();
+                        if (xBee == null) {
+                            return;
+                        }
+                        if (xBee.isOpen()) {
+
+                            String textoAll = "ZIG35,11976,13A200,415718C2,0,1,0000000400,0000000405,0000000000,2";
+                            StringTokenizer st = new StringTokenizer(textoAll, "\n");
+                            while (st.hasMoreTokens()) {
+
+                                String texto = st.nextToken();
+                                dataHora = ("[" + sdf.format(c.getTime()) + "] - ");
+
+                                byte[] dataToSend = texto.getBytes();
+
+                                try {
+
+                                    mainApp.getxBee().sendBroadcastData(dataToSend);
+                                    texto = dataHora + texto;
+                                    taDados.append("Enviado broadcast: " + texto + "\n");
+                                    
+                                    System.out.println(texto);
+
+                                } catch (XBeeException ex) {
+                                    Logger.getLogger(ConexaoFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                            System.out.println("Conexão está aberta");
+
+                        } else {
+
+                            endListenner();
+                            //Capturar porta e velocidade
+                            String porta = MainApp.getPORT();
+                            int baudrate = MainApp.getBAUD_RATE();
+
+                            XBeeDevice xBee1 = getMainApp().getxBee();
+                            getMainApp().setxBee(xBee1);
+
+                            xBee = new XBeeDevice(porta, baudrate);
+                            listPorts();
+                            if (listPorts() == true) {
+
+                                try {
+                                    xBee1.open();
+
+                                    startListenner();
+                                } catch (XBeeException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                taDados.append("Porta não reconhecida\n");
+                                System.out.println("Porta não reconhecida");
+                            }
+
+                        }
+                        // Forçar coleta de lixo
+                        Runtime.getRuntime().gc();
+                    } catch (Exception e) {
+                        System.out.println("Não conseguiu conectar");
+                        e.printStackTrace();
+                    }
+                }
+            };
+            timer.scheduleAtFixedRate(tarefa, DELAY, SEGUNDOS);
+        }
+    }
+
+    private boolean listPorts() {
+        boolean portaIndentificada = false;
+        String porta = MainApp.getPORT();
+        Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
+        while (portEnum.hasMoreElements()) {
+            CommPortIdentifier portIdentifier = portEnum.nextElement();
+            ArrayList<String> portas = new ArrayList<>();
+
+            portas.add(portIdentifier.getName().toUpperCase());
+
+            System.out.println("Portas" + portas);
+
+            if (portas.get(0).equals(porta)) {
+                System.out.println("Igual");
+
+                portaIndentificada = true;
+            }
+
+        }
+        if (portaIndentificada == true) {
+            taDados.append("Reconectou\n");
+        }
+        return portaIndentificada;
+    }
 }
