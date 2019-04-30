@@ -1326,7 +1326,12 @@ public class ConexaoFrame extends javax.swing.JFrame {
         this.listenner = new IDataReceiveListener() {
             @Override
             public void dataReceived(XBeeMessage xbm) {
-
+                taDados.append("Endereço baixo: "+xbm.getDevice().get16BitAddress());
+                taDados.append("\nEndereço alto: "+xbm.getDevice().get64BitAddress()+"\n");
+                
+                System.out.println("Endereço baixo: "+xbm.getDevice().get16BitAddress());
+                System.out.println("Endereço alto: "+xbm.getDevice().get64BitAddress());
+                
                 boolean status = xbm.isBroadcast();
                 String me = status ? "Recebido broadcast: " : "Recebido unicast: ";
                 dataHora = ("[" + sdf.format(c.getTime()) + "] - ");
@@ -1362,28 +1367,28 @@ public class ConexaoFrame extends javax.swing.JFrame {
                             return;
                         }
                         if (xBee.isOpen()) {
-
-                            String textoAll = "ZIG35,11976,13A200,415718C2,0,1,0000000400,0000000405,0000000000,2";
-                            StringTokenizer st = new StringTokenizer(textoAll, "\n");
-                            while (st.hasMoreTokens()) {
-
-                                String texto = st.nextToken();
-                                dataHora = ("[" + sdf.format(c.getTime()) + "] - ");
-
-                                byte[] dataToSend = texto.getBytes();
-
-                                try {
-
-                                    mainApp.getxBee().sendBroadcastData(dataToSend);
-                                    texto = dataHora + texto;
-                                    taDados.append("Enviado broadcast: " + texto + "\n");
-                                    
-                                    System.out.println(texto);
-
-                                } catch (XBeeException ex) {
-                                    Logger.getLogger(ConexaoFrame.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                            }
+                            
+//                            String textoAll = "ZIG35,11976,13A200,415718C2,0,1,0000000400,0000000405,0000000000,2";
+//                            StringTokenizer st = new StringTokenizer(textoAll, "\n");
+//                            while (st.hasMoreTokens()) {
+//
+//                                String texto = st.nextToken();
+//                                dataHora = ("[" + sdf.format(c.getTime()) + "] - ");
+//
+//                                byte[] dataToSend = texto.getBytes();
+//
+//                                try {
+//
+//                                    mainApp.getxBee().sendBroadcastData(dataToSend);
+//                                    texto = dataHora + texto;
+//                                    taDados.append("Enviado broadcast: " + texto + "\n");
+//                                    
+//                                    System.out.println(texto);
+//
+//                                } catch (XBeeException ex) {
+//                                    Logger.getLogger(ConexaoFrame.class.getName()).log(Level.SEVERE, null, ex);
+//                                }
+//                            }
                             System.out.println("Conexão está aberta");
 
                         } else {
@@ -1435,10 +1440,10 @@ public class ConexaoFrame extends javax.swing.JFrame {
 
             portas.add(portIdentifier.getName().toUpperCase());
 
-            System.out.println("Portas" + portas);
+//            System.out.println("Portas" + portas);
 
             if (portas.get(0).equals(porta)) {
-                System.out.println("Igual");
+//                System.out.println("Igual");
 
                 portaIndentificada = true;
             }
