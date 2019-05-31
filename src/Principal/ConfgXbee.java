@@ -7,6 +7,7 @@ package Principal;
 
 import com.digi.xbee.api.XBeeDevice;
 import com.digi.xbee.api.exceptions.XBeeException;
+import com.digi.xbee.api.utils.HexUtils;
 import gnu.io.CommPortIdentifier;
 import java.awt.Dialog;
 import java.awt.event.KeyEvent;
@@ -15,7 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import static Principal.ConexaoFrame.monitorZig;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -52,18 +53,18 @@ public class ConfgXbee extends javax.swing.JFrame {
             return;
         }
 
-        MainApp auxMainApp = conexFrame.getMainApp();
+//        MainApp auxMainApp = conexFrame.getMainApp();
 
+        /*
         cbPort.setSelectedItem(auxMainApp.getPORT().toUpperCase());
         cbVelocidade.setSelectedItem(new Integer(auxMainApp.getBAUD_RATE()));
 
         //condição para habilitar os botoes se a conexão ja estiver aberta
-        if (xBee.isOpen()) {
+         if (xBee.isOpen()) {
             this.btnSalvar.setEnabled(false);
         } else {
             this.btnFechar.setEnabled(false);
-        }
-
+        }*/
     }
 
     private void listPorts() {
@@ -93,6 +94,16 @@ public class ConfgXbee extends javax.swing.JFrame {
         btnFechar = new javax.swing.JToggleButton();
         jLabel3 = new javax.swing.JLabel();
         cbPort = new javax.swing.JComboBox<>();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableXbee = new javax.swing.JTable();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        tfAlto = new javax.swing.JTextField();
+        tfBaixo = new javax.swing.JTextField();
+        btnStatus = new javax.swing.JRadioButton();
+        jButton1 = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        tfRede = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Configuração Xbee");
@@ -114,8 +125,9 @@ public class ConfgXbee extends javax.swing.JFrame {
         });
 
         btnSalvar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/Check_24x24.png"))); // NOI18N
-        btnSalvar.setText("Conectar");
+        btnSalvar.setText("Salvar");
         btnSalvar.setToolTipText("");
+        btnSalvar.setEnabled(false);
         btnSalvar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSalvarActionPerformed(evt);
@@ -123,9 +135,10 @@ public class ConfgXbee extends javax.swing.JFrame {
         });
 
         cbVelocidade.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "9600", "19200", "115200", " " }));
+        cbVelocidade.setEnabled(false);
 
         btnFechar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/Cancel_24x24.png"))); // NOI18N
-        btnFechar.setText("Fechar porta");
+        btnFechar.setText("Desconectar");
         btnFechar.setToolTipText("");
         btnFechar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -136,9 +149,80 @@ public class ConfgXbee extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel3.setText("Configuração Xbee");
 
+        cbPort.setEnabled(false);
         cbPort.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 cbPortKeyPressed(evt);
+            }
+        });
+
+        tableXbee.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "Porta", "Velocidade", "End. Alto", "End. Baixo", "Status", "Rede"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, true, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tableXbee.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableXbeeMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tableXbee);
+        if (tableXbee.getColumnModel().getColumnCount() > 0) {
+            tableXbee.getColumnModel().getColumn(3).setPreferredWidth(150);
+        }
+
+        jLabel4.setText("End. Alto :");
+
+        jLabel5.setText("End. Baixo :");
+
+        tfAlto.setEditable(false);
+        tfAlto.setEnabled(false);
+
+        tfBaixo.setEditable(false);
+        tfBaixo.setEnabled(false);
+        tfBaixo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfBaixoActionPerformed(evt);
+            }
+        });
+
+        btnStatus.setText("Status");
+        btnStatus.setEnabled(false);
+        btnStatus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnStatusActionPerformed(evt);
+            }
+        });
+
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Img/Add_24x24.png"))); // NOI18N
+        jButton1.setText("Novo");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setText("Rede : ");
+
+        tfRede.setEditable(false);
+        tfRede.setEnabled(false);
+        tfRede.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfRedeActionPerformed(evt);
             }
         });
 
@@ -147,57 +231,96 @@ public class ConfgXbee extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addComponent(btnSalvar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
-                .addComponent(btnFechar)
-                .addGap(58, 58, 58)
-                .addComponent(btnCancelar)
-                .addGap(10, 10, 10))
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(25, 25, 25)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnFechar, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(176, 176, 176)
-                        .addComponent(jLabel3))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(113, 113, 113)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(cbPort, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(cbVelocidade, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
+                                .addComponent(cbVelocidade, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel5))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jLabel3)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(19, 19, 19)
+                                    .addComponent(cbPort, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jLabel4))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(tfBaixo, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tfAlto, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(tfRede, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(11, 11, 11)
                 .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(cbPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(10, 10, 10)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(cbVelocidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(29, 29, 29)
+                    .addComponent(cbPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(tfAlto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnStatus))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(cbVelocidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(tfBaixo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6)
+                            .addComponent(tfRede, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancelar)
                     .addComponent(btnFechar)
-                    .addComponent(btnSalvar))
-                .addContainerGap())
+                    .addComponent(btnSalvar)
+                    .addComponent(jButton1))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        this.dispose();
+
+        cbPort.setSelectedItem(null);
+        cbVelocidade.setSelectedItem(null);
+        tfAlto.setText("");
+        tfBaixo.setText("");
+        btnStatus.setSelected(false);
+
+        btnSalvar.setEnabled(false);
+
+//        this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
@@ -212,12 +335,11 @@ public class ConfgXbee extends javax.swing.JFrame {
         XBeeDevice xBee = this.conexaoFrame.getMainApp().getxBee();
         System.out.println(xBee);
         this.conexaoFrame.getMainApp().setxBee(xBee);
-        
-        
+
         xBee = new XBeeDevice(porta, baudrate);
 
         try {
-
+            String status;
             xBee.open();
             this.btnSalvar.setEnabled(false);
             this.btnCancelar.setEnabled(true);
@@ -232,13 +354,31 @@ public class ConfgXbee extends javax.swing.JFrame {
 
             //Inicializa thread para verificar xbee 
 //            monitorZig.addZig(xBee, nomeThread, porta, baudrate);
+            tableXbee.setValueAt(porta, 0, 0);
+            tableXbee.setValueAt(baudrate, 0, 1);
+            tableXbee.setValueAt(xBee.get16BitAddress(), 0, 2);
+            tableXbee.setValueAt(xBee.get64BitAddress(), 0, 3);
             
+            if (xBee.isOpen()) {
+                status = "Conectado";
+            } else {
+                status = "Desconectado";
+            }
+
+            tableXbee.setValueAt(status, 0, 4);
+            
+            tableXbee.setValueAt(HexUtils.byteArrayToHexString(xBee.getPANID()), 0, 5);
+            
+//               xbeeDevice.setPANID(HexUtils.hexStringToByteArray(idRede));
+
+//            xBee.get16BitAddress();
+//            xBee.get64BitAddress();
             conexaoFrame.Atualizar();
-            
+
             JOptionPane.showMessageDialog(null, "Conectado com sucesso DataCall");
 
-            this.dispose();
-
+            //feixar a janela ao conectar
+//            this.dispose();
         } catch (XBeeException ex) {
 
             this.btnSalvar.setEnabled(true);
@@ -252,17 +392,23 @@ public class ConfgXbee extends javax.swing.JFrame {
     private void btnFecharActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFecharActionPerformed
 
         XBeeDevice xBee = this.conexaoFrame.getMainApp().getxBee();
-        xBee.close();
-        this.btnSalvar.setEnabled(true);
-        this.btnCancelar.setEnabled(false);
+        if (xBee.isOpen()) {
 
-        conexaoFrame.endListenner();
-        try {
-            Thread.sleep(200);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(ConfgXbee.class.getName()).log(Level.SEVERE, null, ex);
+            xBee.close();
+            this.btnSalvar.setEnabled(true);
+            this.btnCancelar.setEnabled(false);
+
+            conexaoFrame.endListenner();
+            JOptionPane.showMessageDialog(null, "Xbee desconectado");
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(ConfgXbee.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Porta não esta aberta");
         }
-        this.dispose();
+//        this.dispose();
     }//GEN-LAST:event_btnFecharActionPerformed
 
     private void cbPortKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cbPortKeyPressed
@@ -271,16 +417,79 @@ public class ConfgXbee extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_cbPortKeyPressed
 
+    private void tfBaixoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfBaixoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfBaixoActionPerformed
+
+    private void tableXbeeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableXbeeMouseClicked
+        // TODO add your handling code here:
+        boolean check = false;
+        try {
+            DefaultTableModel model = (DefaultTableModel) this.tableXbee.getModel();
+            int selectedRow = tableXbee.getSelectedRow();
+
+//            cbPort.s(model.getValueAt(selectedRow, 0).toString());
+            tfAlto.setText(model.getValueAt(selectedRow, 2).toString());
+            tfBaixo.setText(model.getValueAt(selectedRow, 3).toString());
+
+            check = (model.getValueAt(selectedRow, 4).equals("Conectado") ? true : false);
+
+            btnStatus.setSelected(check);
+
+            tfRede.setText(model.getValueAt(selectedRow, 5).toString());
+            btnSalvar.setEnabled(true);
+            
+            tfRede.setEnabled(true);
+
+        } catch (Exception e) {
+            System.out.println("Sem dados");
+        }
+
+
+    }//GEN-LAST:event_tableXbeeMouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        cbPort.setEnabled(true);
+        cbVelocidade.setEnabled(true);
+        tfAlto.setEnabled(true);
+        tfBaixo.setEnabled(true);
+
+        btnSalvar.setEnabled(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void btnStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStatusActionPerformed
+        // TODO add your handling code here:
+        if (btnStatus.isSelected()) {
+            btnStatus.setText("On");
+        } else {
+            btnStatus.setText("Off");
+        }
+    }//GEN-LAST:event_btnStatusActionPerformed
+
+    private void tfRedeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfRedeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfRedeActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton btnCancelar;
     private javax.swing.JToggleButton btnFechar;
     private javax.swing.JToggleButton btnSalvar;
+    private javax.swing.JRadioButton btnStatus;
     private javax.swing.JComboBox<String> cbPort;
     private javax.swing.JComboBox<String> cbVelocidade;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tableXbee;
+    private javax.swing.JTextField tfAlto;
+    private javax.swing.JTextField tfBaixo;
+    private javax.swing.JTextField tfRede;
     // End of variables declaration//GEN-END:variables
 }

@@ -17,6 +17,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.List;
@@ -353,7 +354,7 @@ public class ConexaoFrame extends javax.swing.JFrame {
         getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(764, 44, -1, -1));
 
         tfBaixo.setEditable(false);
-        getContentPane().add(tfBaixo, new org.netbeans.lib.awtextra.AbsoluteConstraints(800, 38, 100, -1));
+        getContentPane().add(tfBaixo, new org.netbeans.lib.awtextra.AbsoluteConstraints(800, 38, 180, -1));
 
         checkSum.setSelected(true);
         checkSum.setText("checksum");
@@ -825,6 +826,7 @@ public class ConexaoFrame extends javax.swing.JFrame {
                     } else {
                         texto = texto + '\n';
                     }
+                    c = Calendar.getInstance();
                     dataHora = ("[" + sdf.format(c.getTime()) + "] - ");
 
                     System.out.println("Send: " + texto);
@@ -946,6 +948,7 @@ public class ConexaoFrame extends javax.swing.JFrame {
                     } else {
                         texto = texto + '\n';
                     }
+                    c = Calendar.getInstance();
                     dataHora = ("[" + sdf.format(c.getTime()) + "] - ");
 
                     System.out.println("Send: " + texto);
@@ -1326,17 +1329,24 @@ public class ConexaoFrame extends javax.swing.JFrame {
         this.listenner = new IDataReceiveListener() {
             @Override
             public void dataReceived(XBeeMessage xbm) {
-                taDados.append("Endereço baixo: "+xbm.getDevice().get16BitAddress());
-                taDados.append("\nEndereço alto: "+xbm.getDevice().get64BitAddress()+"\n");
-                
-                System.out.println("Endereço baixo: "+xbm.getDevice().get16BitAddress());
-                System.out.println("Endereço alto: "+xbm.getDevice().get64BitAddress());
-                
+                taDados.append("Endereço baixo: " + xbm.getDevice().get16BitAddress());
+                taDados.append("\nEndereço alto: " + xbm.getDevice().get64BitAddress() + "\n");
+
+//                System.out.println("Endereço baixo: " + xbm.getDevice().get16BitAddress());
+//                System.out.println("Endereço alto: " + xbm.getDevice().get64BitAddress());
                 boolean status = xbm.isBroadcast();
                 String me = status ? "Recebido broadcast: " : "Recebido unicast: ";
+                c = Calendar.getInstance();
                 dataHora = ("[" + sdf.format(c.getTime()) + "] - ");
                 dataHora = me + dataHora;
                 taDados.append(dataHora + xbm.getDataString() + "\n");
+                String[] msg;
+                msg = xbm.getDataString().split(",");
+                if (msg[0].equals("IPDA")) {
+                    tfAlto.setText(xbm.getDevice().get64BitAddress().toString());
+                    tfBaixo.setText(xbm.getDevice().get16BitAddress().toString());
+
+                }
 
             }
         };
@@ -1367,28 +1377,7 @@ public class ConexaoFrame extends javax.swing.JFrame {
                             return;
                         }
                         if (xBee.isOpen()) {
-                            
-//                            String textoAll = "ZIG35,11976,13A200,415718C2,0,1,0000000400,0000000405,0000000000,2";
-//                            StringTokenizer st = new StringTokenizer(textoAll, "\n");
-//                            while (st.hasMoreTokens()) {
-//
-//                                String texto = st.nextToken();
-//                                dataHora = ("[" + sdf.format(c.getTime()) + "] - ");
-//
-//                                byte[] dataToSend = texto.getBytes();
-//
-//                                try {
-//
-//                                    mainApp.getxBee().sendBroadcastData(dataToSend);
-//                                    texto = dataHora + texto;
-//                                    taDados.append("Enviado broadcast: " + texto + "\n");
-//                                    
-//                                    System.out.println(texto);
-//
-//                                } catch (XBeeException ex) {
-//                                    Logger.getLogger(ConexaoFrame.class.getName()).log(Level.SEVERE, null, ex);
-//                                }
-//                            }
+
                             System.out.println("Conexão está aberta");
 
                         } else {
@@ -1441,7 +1430,6 @@ public class ConexaoFrame extends javax.swing.JFrame {
             portas.add(portIdentifier.getName().toUpperCase());
 
 //            System.out.println("Portas" + portas);
-
             if (portas.get(0).equals(porta)) {
 //                System.out.println("Igual");
 
@@ -1453,5 +1441,29 @@ public class ConexaoFrame extends javax.swing.JFrame {
             taDados.append("Reconectou\n");
         }
         return portaIndentificada;
+    }
+
+    public void enviaComandos() {
+        String textoAll = "ZIG35,11976,13A200,415718C2,0,1,0000000400,0000000405,0000000000,2";
+        StringTokenizer st = new StringTokenizer(textoAll, "\n");
+        while (st.hasMoreTokens()) {
+
+            String texto = st.nextToken();
+            dataHora = ("[" + sdf.format(c.getTime()) + "] - ");
+
+            byte[] dataToSend = texto.getBytes();
+
+            try {
+
+                mainApp.getxBee().sendBroadcastData(dataToSend);
+                texto = dataHora + texto;
+                taDados.append("Enviado broadcast: " + texto + "\n");
+
+                System.out.println(texto);
+
+            } catch (XBeeException ex) {
+                Logger.getLogger(ConexaoFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 }
