@@ -17,7 +17,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.List;
@@ -209,7 +208,6 @@ public class ConexaoFrame extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem6 = new javax.swing.JMenuItem();
         jMenuItem7 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
@@ -689,17 +687,8 @@ public class ConexaoFrame extends javax.swing.JFrame {
         });
         jMenu2.add(jMenuItem2);
 
-        jMenuItem6.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem6.setText("Configurar Preambulo");
-        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem6ActionPerformed(evt);
-            }
-        });
-        jMenu2.add(jMenuItem6);
-
         jMenuItem7.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem7.setText("Configurar modo de Trabalho");
+        jMenuItem7.setText("Confugurações Gerais Xbee");
         jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem7ActionPerformed(evt);
@@ -819,7 +808,7 @@ public class ConexaoFrame extends javax.swing.JFrame {
 
                     String texto = st.nextToken();
 
-                    if (checkSum.isSelected()) {
+                    if (checkSum.isSelected() && !texto.contains("FIN") && !texto.contains("INICIO") && !texto.contains("IPDA")) {
 
                         texto = texto + ",";
                         texto = texto + calculaCheckSumPara(texto) + '\n';
@@ -905,6 +894,7 @@ public class ConexaoFrame extends javax.swing.JFrame {
 
                             mainApp.getxBee().sendData(remoteDevice, dataToSend);
                             texto = dataHora + texto;
+                            
                             taDados.append("Enviado unicast: " + texto + "\n");
                         }
 
@@ -941,7 +931,7 @@ public class ConexaoFrame extends javax.swing.JFrame {
 
                     String texto = st.nextToken();
 
-                    if (checkSum.isSelected()) {
+                   if (checkSum.isSelected() && !texto.contains("FIN") && !texto.contains("INICIO") && !texto.contains("IPDA")) {
 
                         texto = texto + ",";
                         texto = texto + calculaCheckSumPara(texto) + '\n';
@@ -1174,11 +1164,6 @@ public class ConexaoFrame extends javax.swing.JFrame {
 //        listPorts();
     }//GEN-LAST:event_formWindowOpened
 
-    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
-        // TODO add your handling code here:
-        new ConfgPreambulo(this).setVisible(true);
-    }//GEN-LAST:event_jMenuItem6ActionPerformed
-
     private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
         // TODO add your handling code here:
         new ConfgModoTrabalho(this).setVisible(true);
@@ -1282,7 +1267,6 @@ public class ConexaoFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -1340,9 +1324,9 @@ public class ConexaoFrame extends javax.swing.JFrame {
                 dataHora = ("[" + sdf.format(c.getTime()) + "] - ");
                 dataHora = me + dataHora;
                 taDados.append(dataHora + xbm.getDataString() + "\n");
-                String[] msg;
-                msg = xbm.getDataString().split(",");
-                if (msg[0].equals("IPDA")) {
+
+                if (me.equals("Recebido unicast: ")) {
+                    
                     tfAlto.setText(xbm.getDevice().get64BitAddress().toString());
                     tfBaixo.setText(xbm.getDevice().get16BitAddress().toString());
 

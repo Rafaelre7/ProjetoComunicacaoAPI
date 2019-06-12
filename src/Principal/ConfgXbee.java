@@ -108,6 +108,11 @@ public class ConfgXbee extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Configuração Xbee");
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
         jLabel1.setText("Selecione a velocidade :");
@@ -358,7 +363,7 @@ public class ConfgXbee extends javax.swing.JFrame {
             tableXbee.setValueAt(baudrate, 0, 1);
             tableXbee.setValueAt(xBee.get16BitAddress(), 0, 2);
             tableXbee.setValueAt(xBee.get64BitAddress(), 0, 3);
-            
+
             if (xBee.isOpen()) {
                 status = "Conectado";
             } else {
@@ -366,11 +371,10 @@ public class ConfgXbee extends javax.swing.JFrame {
             }
 
             tableXbee.setValueAt(status, 0, 4);
-            
-            tableXbee.setValueAt(HexUtils.byteArrayToHexString(xBee.getPANID()), 0, 5);
-            
-//               xbeeDevice.setPANID(HexUtils.hexStringToByteArray(idRede));
 
+            tableXbee.setValueAt(HexUtils.byteArrayToHexString(xBee.getPANID()), 0, 5);
+
+//               xbeeDevice.setPANID(HexUtils.hexStringToByteArray(idRede));
 //            xBee.get16BitAddress();
 //            xBee.get64BitAddress();
             conexaoFrame.Atualizar();
@@ -438,7 +442,7 @@ public class ConfgXbee extends javax.swing.JFrame {
 
             tfRede.setText(model.getValueAt(selectedRow, 5).toString());
             btnSalvar.setEnabled(true);
-            
+
             tfRede.setEnabled(true);
 
         } catch (Exception e) {
@@ -471,6 +475,12 @@ public class ConfgXbee extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_tfRedeActionPerformed
 
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        // TODO add your handling code here:
+        abrir();
+
+    }//GEN-LAST:event_formWindowOpened
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton btnCancelar;
@@ -492,4 +502,36 @@ public class ConfgXbee extends javax.swing.JFrame {
     private javax.swing.JTextField tfBaixo;
     private javax.swing.JTextField tfRede;
     // End of variables declaration//GEN-END:variables
+
+    private void abrir() {
+//        if (this.conexaoFrame.getMainApp().getxBee().isOpen()) {
+//            try {
+//
+//                XBeeDevice xBee = this.conexaoFrame.getMainApp().getxBee();
+//
+//                /*
+//                 tfAlto.setText(model.getValueAt(selectedRow, 2).toString());
+//            tfBaixo.setText(model.getValueAt(selectedRow, 3).toString());
+//
+//            check = (model.getValueAt(selectedRow, 4).equals("Conectado") ? true : false);
+//
+//            btnStatus.setSelected(check);
+//
+//            tfRede.setText(model.getValueAt(selectedRow, 5).toString());
+//                 */
+//                tfDescricao.setText(xBee.getNodeID());
+//                tfRede.setText(HexUtils.byteArrayToHexString(xBee.getPANID()));
+//                cbModo.setSelectedIndex(1);
+//                int preambulo = Integer.parseInt(HexUtils.byteArrayToHexString(xBee.getParameter("HP")));
+//                cbPreambulo.setSelectedIndex(preambulo);
+//                cbModo.setSelectedIndex(2);
+//            } catch (XBeeException e) {
+//                e.printStackTrace();
+//                alert("Ocorreu um erro");
+//            }
+//
+//        } else {
+//            System.out.println("fechado");
+//        }
+    }
 }
